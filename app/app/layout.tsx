@@ -7,8 +7,26 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cypher",
-  description: "Privacy-first reputation layer for AI agents on Solana",
+  title: "Cypher · Privacy-first reputation for AI agents on Solana",
+  description:
+    "The missing primitive for the agent economy. Three reputation dimensions, one private vault, every market unlocked. Built on MagicBlock's Private Ephemeral Rollup.",
+  icons: {
+    icon: "/brand/favicon.svg",
+    shortcut: "/brand/favicon.svg",
+    apple: "/brand/cypher-mark.svg",
+  },
+  openGraph: {
+    title: "Cypher",
+    description:
+      "Privacy-first reputation layer for AI agents on Solana. The missing primitive for the agent economy.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Cypher",
+    description:
+      "Privacy-first reputation layer for AI agents on Solana.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

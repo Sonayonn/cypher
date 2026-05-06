@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" fill="none" role="img" aria-label="Cypher">
+  <!-- Mark: lowercase 'c' with a privacy gap on the right -->
+  <g transform="translate(4, 8)">
+    <path
+      d="M 36 12
+         A 18 18 0 1 0 36 28
+         L 30 24
+         A 11 11 0 1 1 30 16 Z"
+      fill="#DC2626"
+    />
+    <!-- The privacy gap: a small notch where the 'c' opens -->
+    <circle cx="34" cy="20" r="2" fill="#DC2626" />
+  </g>
+
+  <!-- Wordmark: 'cypher' in heavy lowercase Geist-style -->
+  <text
+    x="56"
+    y="38"
+    font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="32"
+    font-weight="800"
+    letter-spacing="-1.6"
+    fill="#DC2626"
+  >cypher</text>
+</svg>

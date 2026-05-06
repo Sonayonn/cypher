@@ -2,18 +2,21 @@
 
 import { ReactNode } from "react";
 import Link from "next/link";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { CypherWalletButton } from "@/components/cypher-wallet-button";
 import { ChevronLeft } from "lucide-react";
+import { CypherLogo } from "./cypher-logo";
 
 export type SceneTheme = {
   brandName: string;
   tagline: string;
-  bg: string;        // e.g. "bg-emerald-50"
-  surface: string;   // e.g. "bg-white"
-  ink: string;       // e.g. "text-emerald-950"
-  muted: string;     // e.g. "text-emerald-700/70"
-  accent: string;    // hex, used inside AttestationGate
+  bg: string;
+  surface: string;
+  ink: string;
+  muted: string;
+  border: string;
+  accent: string;
+  accentSoft: string;
+  accentText: string;
 };
 
 export function SceneShell({
@@ -25,24 +28,36 @@ export function SceneShell({
 }) {
   return (
     <div className={`min-h-screen ${theme.bg} ${theme.ink}`}>
-      <header className="px-8 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-6">
+      <header
+        className={`px-6 md:px-10 py-4 flex items-center justify-between border-b ${theme.border} sticky top-0 backdrop-blur z-50`}
+        style={{
+          backgroundColor: "rgb(from currentColor r g b / 0)",
+        }}
+      >
+        <div className="flex items-center gap-4">
           <Link
-            href="/"
-            className={`text-sm flex items-center gap-1 ${theme.muted} hover:${theme.ink}`}
+            href="/dashboard"
+            className={`inline-flex items-center gap-1.5 text-xs font-medium ${theme.muted} hover:opacity-80 transition-opacity`}
+            aria-label="Back to Cypher"
           >
-            <ChevronLeft className="h-4 w-4" />
-            Cypher
+            <ChevronLeft className="h-3.5 w-3.5" />
+              <CypherLogo size="sm" asLink={false} />
           </Link>
-          <div className={`text-sm ${theme.muted}`}>·</div>
-          <div className="font-semibold tracking-tight">{theme.brandName}</div>
-          <div className={`text-xs ${theme.muted} hidden sm:block`}>
-            {theme.tagline}
+          <div className={`h-5 w-px ${theme.border}`} />
+          <div className="flex items-baseline gap-3">
+            <span className="font-semibold tracking-tight text-base">
+              {theme.brandName}
+            </span>
+            <span className={`text-xs ${theme.muted} hidden md:inline`}>
+              {theme.tagline}
+            </span>
           </div>
         </div>
-        <WalletMultiButton />
+        <CypherWalletButton />
       </header>
-      <div className="px-8 py-6 max-w-5xl mx-auto">{children}</div>
+      <div className="px-6 md:px-10 py-12 md:py-16 max-w-6xl mx-auto">
+        {children}
+      </div>
     </div>
   );
 }

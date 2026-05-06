@@ -7,8 +7,6 @@ import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adap
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { RPC_ENDPOINT } from "@/lib/cypher-config";
 
-import "@solana/wallet-adapter-react-ui/styles.css";
-
 export function CypherWalletProvider({ children }: { children: ReactNode }) {
   const wallets = useMemo(() => [
     new PhantomWalletAdapter(),

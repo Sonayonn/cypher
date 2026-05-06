@@ -81,6 +81,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Cypher brand */
+  --cypher-accent: #DC2626;
+  --cypher-accent-fg: #FFFFFF;
+  --cypher-accent-soft: #FEF2F2;
+  --cypher-accent-border: rgba(220, 38, 38, 0.2);
+  --cypher-ink: #0a0a0a;
+  --cypher-ink-soft: #404040;
 }
 
 .dark {
@@ -115,16 +122,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
+  --cypher-accent: #EF4444;
+  --cypher-accent-fg: #FFFFFF;
+  --cypher-accent-soft: rgba(220, 38, 38, 0.1);
+  --cypher-accent-border: rgba(239, 68, 68, 0.3);
+  --cypher-ink: #fafafa;
+  --cypher-ink-soft: #a3a3a3;
 }
