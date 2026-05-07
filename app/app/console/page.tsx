@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { CypherWalletButton } from "@/components/cypher-wallet-button";
@@ -56,6 +56,11 @@ export default function ConsolePage() {
 
   const [previewRep, setPreviewRep] = useState<AgentReputation | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
+
+  useEffect(() => {
+  handleAgentChange(agentInput);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleAgentChange(value: string) {
     setAgentInput(value);
@@ -306,19 +311,44 @@ export default function ConsolePage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-xs text-muted-foreground leading-relaxed">
-                    The agent&apos;s actual score is not revealed by the protocol.
-                    Only the boolean answer to the threshold check.
+                    The threshold check executed on-chain. The privacy property:
+                    your application code receives only the boolean. The underlying
+                    score lives in transaction logs (publicly auditable but never
+                    consumed by verifier apps).
                   </div>
-                  <div className="pt-3 border-t border-border space-y-2 text-xs">
-                    <ResultRow label="Agent" value={result.agent.toBase58()} mono />
-                    <ResultRow label="Dimension" value={DIMENSION_LABELS[result.dimension]} />
-                    <ResultRow label="Threshold" value={result.threshold.toString()} />
-                    <ResultRow label="Passes" value={result.passes ? "true" : "false"} />
-                    <ResultRow
-                      label="Timestamp"
-                      value={new Date(result.timestamp.toNumber() * 1000).toISOString()}
-                    />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-border">
+                    {/* What the verifier app sees */}
+                    <div className="rounded-md p-3 border" style={{ borderColor: "var(--cypher-accent-border)", backgroundColor: "var(--cypher-accent-soft)" }}>
+                      <div className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--cypher-accent)" }}>
+                        Your verifier app receives
+                      </div>
+                      <pre className="text-xs font-mono leading-relaxed">
+{`{
+  passes: ${result.passes},
+  threshold: ${result.dimension === DIM_VOLUME ? `"T${result.threshold.toString()}"` : result.threshold.toString()},
+  dimension: "${DIMENSION_LABELS[result.dimension]}"
+}`}
+                      </pre>
+                    </div>
+
+                    {/* What's actually on-chain */}
+                    <div className="rounded-md p-3 border border-border bg-muted/40">
+                      <div className="text-[10px] font-semibold uppercase tracking-wider mb-2 text-muted-foreground">
+                        On-chain (auditable)
+                      </div>
+                      <pre className="text-xs font-mono leading-relaxed text-muted-foreground">
+{`{
+  passes: ${result.passes},
+  score: ${result.score.toString()},
+  threshold: ${result.threshold.toString()},
+  agent: "${result.agent.toBase58().slice(0, 8)}…",
+  timestamp: ${result.timestamp.toString()}
+}`}
+                      </pre>
+                    </div>
                   </div>
+
                   <div className="pt-1">
                     <Button variant="outline" size="sm" onClick={reset}>
                       New query
