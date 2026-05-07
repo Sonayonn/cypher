@@ -1,0 +1,39 @@
+{
+  "name": "@sonayonn/cypher-verify",
+  "version": "0.1.0",
+  "description": "Privacy-first reputation verification for Solana agents. Drop-in attestation client for the Cypher protocol.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "prepublishOnly": "yarn build"
+  },
+  "keywords": [
+    "solana",
+    "reputation",
+    "privacy",
+    "attestation",
+    "magicblock",
+    "tee",
+    "agents"
+  ],
+  "author": "Cypher",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sonayonn/cypher.git"
+  },
+  "homepage": "https://cypher-devnet.vercel.app",
+  "peerDependencies": {
+    "@coral-xyz/anchor": "^0.32.0",
+    "@solana/web3.js": "^1.95.0"
+  },
+  "devDependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/web3.js": "^1.95.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.6.0"
+  }
+}

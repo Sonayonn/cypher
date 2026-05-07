@@ -219,7 +219,7 @@ export default function LandingPage() {
         </p>
 
         <pre className="bg-zinc-950 text-zinc-100 p-7 rounded-xl overflow-x-auto text-sm font-mono leading-relaxed border border-zinc-800">
-{`import { verifyAttestation, Dimensions } from "@cypher/verify";
+{`import { verifyAttestation, Dimensions } from "@sonayonn/cypher-verify";
 
 const result = await verifyAttestation({
   agent: agentPubkey,

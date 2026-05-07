@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     description:
       "Privacy-first reputation layer for AI agents on Solana. The missing primitive for the agent economy.",
     type: "website",
+    url:"https://cypher-devnet.vercel.app/"
   },
   twitter: {
     card: "summary",

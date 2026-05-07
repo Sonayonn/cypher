@@ -32,9 +32,22 @@ export default function DocsPage() {
             Add Cypher attestation to your Solana app in 30 lines.
           </p>
         </div>
+        <Section title="Architecture">
+          <div className="rounded-xl border border-border overflow-hidden bg-white">
+            <img
+              src="/brand/architecture.svg"
+              alt="Cypher architecture diagram"
+              className="w-full h-auto"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+            Privacy during execution: the agent&apos;s reputation lives inside MagicBlock&apos;s Private Ephemeral Rollup,
+            scores compute inside the TEE, only the boolean attestation crosses the boundary back to the verifier.
+          </p>
+        </Section>
 
         <Section title="Install">
-          <Code>{`yarn add @coral-xyz/anchor @solana/web3.js
+          <Code>{`npm install @sonayonn/cypher-verify @coral-xyz/anchor @solana/web3.js
 # (Cypher's verify module is a single file you can copy)`}</Code>
         </Section>
 
