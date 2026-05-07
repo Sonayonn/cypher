@@ -1,143 +1,128 @@
-# ➕ Anchor Counter
+<div align="center">
 
-Simple counter program using Anchor and Ephemeral Rollups.
+# Cypher
 
-## Software Packages
+**The missing primitive for the agent economy.**
 
-This program has utilized the following software packages.
+A privacy-first reputation layer for AI agents on Solana, built inside MagicBlock's Private Ephemeral Rollup.
 
-| Software   | Version | Installation Guide                                              |
-| ---------- | ------- | --------------------------------------------------------------- |
-| **Solana** | 2.3.13  | [Install Solana](https://docs.anza.xyz/cli/install)             |
-| **Rust**   | 1.85.0  | [Install Rust](https://www.rust-lang.org/tools/install)         |
-| **Anchor** | 0.32.1  | [Install Anchor](https://www.anchor-lang.com/docs/installation) |
-| **Node**   | 24.10.0 | [Install Node](https://nodejs.org/en/download/current)          |
+[**Live demo →**](https://cypher-devnet.vercel.app) · [**npm package →**](https://www.npmjs.com/package/@sonayonn/cypher-verify) · [**Verifier console →**](https://cypher-devnet.vercel.app/console) · [**Docs →**](https://cypher-devnet.vercel.app/docs)
 
-```sh
-# Check and initialize your Solana version
-agave-install list
-agave-install init 2.3.13
+</div>
 
-# Check and initialize your Rust version
-rustup show
-rustup install 1.85.0
+---
 
-# Check and initialize your Anchor version
-avm list
-avm use 0.32.1
-```
+## The insight
 
-## ✨ Build and Test
+Every privacy use case on MagicBlock's RFP roadmap silently depends on agent reputation existing. Private payments require trust in payers. Undercollateralized lending requires creditworthiness. Sealed-bid auctions require volume verification. **None of these can ship without a reputation primitive underneath them.** Cypher is that primitive.
 
-The test script automatically detects the cluster from `Anchor.toml` and handles Ephemeral Rollup setup for localnet:
+Three reputation dimensions — **Payment Reliability**, **Credit Worthiness**, **Volume Tier** — recorded privately, scored privately, attestable on demand. The verifier learns whether the agent meets a threshold. Nothing else.
 
-```bash
-yarn
-anchor test --skip-deploy --skip-build --skip-local-validator
-```
+## Demo
 
-Build, deploy and run the tests with new program (note: delete keypairs in `/target/deploy` folder):
+> *3-minute walkthrough — coming on submission day*
+
+![Cypher demo](./docs/demo.gif)
+
+## Try it now
+
+| Artifact | Where |
+|---|---|
+| 🌐 Live frontend | https://cypher-devnet.vercel.app |
+| 📦 npm package | `npm install @sonayonn/cypher-verify` |
+| 🔗 Solana program (devnet) | [`4ofnnZnnjkejk8Sk5ggjtAzAC9YSeVGTLuX1g7jPrtJC`](https://explorer.solana.com/address/4ofnnZnnjkejk8Sk5ggjtAzAC9YSeVGTLuX1g7jPrtJC?cluster=devnet) |
+| 🤖 Demo agent | [`J15wEqvQvXJHGAZSaMbaEnnEvjV7JqLB6Ku2ZepB3CQ5`](https://explorer.solana.com/address/J15wEqvQvXJHGAZSaMbaEnnEvjV7JqLB6Ku2ZepB3CQ5?cluster=devnet) |
+| ⚡ Verifier console | https://cypher-devnet.vercel.app/console |
+
+Run the proof from a clean clone in 60 seconds:
 
 ```bash
-# Delete keypairs in the deploy folder
-rm -rf /target/deploy/*.keypair
-
-# Build, deploy and test program
-anchor test
+git clone https://github.com/Sonayonn/cypher.git
+cd cypher && yarn install
+yarn cypher:demo
 ```
 
-## 📤 Delegate an account
+Output: 5 attestation tests against the live devnet program, all green.
 
-Delegating an account is the process of transferring the ownership of an account to the delegation program.
-After delegation, the account can be treated as a regular account in the Ephemeral Rollups, where transactions can be run with low-latency.
+## Architecture
 
-Delegation is done by invoking trough CPI the `delegate` instruction of the delegation program.
+![Cypher architecture](./app/public/brand/architecture.svg)
 
-1. Add the delegation sdk to your project:
+State lives on Solana base layer. When attestation needs to happen, the agent's reputation PDA delegates into MagicBlock's Private Ephemeral Rollup — a Solana-compatible ephemeral rollup running inside an Intel TDX Trusted Execution Environment. Events record there, threshold checks compute there, and the only thing that crosses back to the verifier is a boolean: did the threshold pass?
 
-   ```bash
-   cargo add ephemeral-rollups-sdk
-   ```
+Privacy during execution. Transparency at the boundary.
 
-2. Mark your program with `#[delegate]` and add the CPI call to one instruction of your program:
+## Three markets, one primitive
 
-   ```rust
-   use ephemeral_rollups_sdk::cpi::delegate_account;
-   use ephemeral_rollups_sdk::er::commit_accounts;
-   use ephemeral_rollups_sdk::anchor::delegate;
+| Cypher dimension | MagicBlock RFP | Demo scene |
+|---|---|---|
+| Payment Reliability ≥ 7 | Private MPP | [Velo Pay](https://cypher-devnet.vercel.app/scenes/velo-pay) — $13k merchant settlement |
+| Credit Worthiness ≥ 6 | Undercollateralized lending | [Orbit Credit](https://cypher-devnet.vercel.app/scenes/orbit-credit) — $80k unsecured line |
+| Volume Tier ≥ T3 | Sealed-bid auctions | [Atlas OTC](https://cypher-devnet.vercel.app/scenes/atlas-otc) — restricted-tier auction |
 
+The three demo scenes are mocks demonstrating the integration shape. Cypher itself — the program, the PDA structure, the TEE flow, the attestation events — is real and live on devnet.
 
-   #[delegate]
-   #[program]
-   pub mod anchor_counter {
+## Integrate in 30 lines
 
-      pub fn delegate(ctx: Context<DelegateInput>) -> Result<()> {
-          let pda_seeds: &[&[u8]] = &[TEST_PDA_SEED];
+```ts
+import { verifyAttestation, Dimensions } from "@sonayonn/cypher-verify";
+import { PublicKey } from "@solana/web3.js";
 
-          delegate_account(
-              &ctx.accounts.payer,
-              &ctx.accounts.pda,
-              &ctx.accounts.owner_program,
-              &ctx.accounts.buffer,
-              &ctx.accounts.delegation_record,
-              &ctx.accounts.delegate_account_seeds,
-              &ctx.accounts.delegation_program,
-              &ctx.accounts.system_program,
-              pda_seeds,
-              0, // max delegation lifetime, 0 means no limit
-              30000, // commit interval in ms (30s)
-       )?;
-
-       Ok(())
-      }
-   }
-   ```
-
-3. After delegation, you can run transactions on the account with low-latency. Any transaction that would work on the base base layer will work on the delegated account.
-
-## 💥 Execute Transactions
-
-1. Add the typescript sdk to your project:
-
-   ```bash
-   yarn add @magicblock-labs/ephemeral-rollups-sdk
-   ```
-
-2. Call the instruction to execute the delegation
-3. Execute a transaction:
-
-   ```typescript
-   let tx = await program.methods
-     .increment()
-     .accounts({
-       counter: pda,
-     })
-     .transaction();
-   tx.feePayer = providerEphemeralRollup.wallet.publicKey;
-   tx.recentBlockhash = (
-     await providerEphemeralRollup.connection.getLatestBlockhash()
-   ).blockhash;
-   tx = await providerEphemeralRollup.wallet.signTransaction(tx);
-
-   const txSign = await providerEphemeralRollup.sendAndConfirm(tx, []);
-   console.log("Increment Tx: ", txSign);
-   ```
-
-## 📥 Undelegate an account
-
-Undelegating an account is the process of transferring the ownership of an account back to the owner program.
-
-You can undelegate with:
-
-```typescript
-const ix = createUndelegateInstruction({
-  payer: provider.wallet.publicKey,
-  delegatedAccount: pda,
-  ownerProgram: program.programId,
-  reimbursement: provider.wallet.publicKey,
+const result = await verifyAttestation({
+  agent: new PublicKey(agentPubkey),
+  dimension: Dimensions.PaymentReliability,
+  threshold: 7,
+  wallet,        // any anchor-compatible wallet
+  connection,    // Solana RPC connection
+  idl,           // Cypher IDL
 });
-let tx = new anchor.web3.Transaction().add(ix);
-tx.feePayer = provider.wallet.publicKey;
-tx.recentBlockhash = (await provider.connection.getLatestBlockhash()).blockhash;
-tx = await provider.wallet.signTransaction(tx);
+
+if (result.passes) {
+  // grant access — agent's actual score is not revealed
+  proceed();
+}
 ```
+
+Full integration guide: [docs page](https://cypher-devnet.vercel.app/docs).
+
+## Privacy property
+
+The verifier learns one thing: whether the agent meets the threshold they asked about. The verifier does **not** learn:
+
+- The agent's actual score
+- Underlying event counts (payments completed, loans on time, etc.)
+- 30-day volume figures
+- Any other dimension's score
+
+This is enforced by the protocol: the AttestationEvent emitted on threshold check contains the score, but the score is bounded inside Cypher's own logic. Verifier applications using `@sonayonn/cypher-verify` receive a typed `{ passes: boolean }` return — by design.
+
+## What's real vs. demo
+
+**Real, on-chain, today:**
+- Cypher Anchor program live on Solana devnet
+- 3-dimension scoring with 7 distinct event types and integer-only math
+- Full TEE delegation flow (proven in `tests/cypher-tee.ts`)
+- AttestationEvent emission with parseable structure
+- npm package published
+
+**Demo, not yet real:**
+- Velo Pay, Orbit Credit, Atlas OTC are convincing mocks demonstrating integration shape
+- Demo agent's events were seeded by a script, not earned through real commerce
+- Single oracle records all events (v2 introduces per-source authority)
+- Devnet, not mainnet
+
+## v2 roadmap
+
+- Mainnet deploy with audited program
+- Per-source authority — each merchant/lender signs its own events
+- TEE-signed attestations verifiable off-chain without trusting the RPC
+- Score economics calibrated against real agent behavior data
+- Programmatic SDK for non-Solana verifiers
+
+## Stack
+
+Anchor 0.32 · Solana 2.0 · MagicBlock ephemeral-rollups-sdk 0.11.1 · Next.js 16 · TypeScript 5.6 · Tailwind 4 · shadcn/ui
+
+## License
+
+MIT
