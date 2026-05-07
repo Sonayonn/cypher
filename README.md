@@ -62,7 +62,24 @@ Privacy during execution. Transparency at the boundary.
 
 The three demo scenes are mocks demonstrating the integration shape. Cypher itself — the program, the PDA structure, the TEE flow, the attestation events — is real and live on devnet.
 
+## How verification works
+
+Three inputs: an **agent pubkey**, a **dimension**, a **threshold**.
+
+| Dimension | Range | Threshold meaning |
+|---|---|---|
+| Payment Reliability | 0–10 | Verifier requires score ≥ N |
+| Credit Worthiness | 0–10 | Verifier requires score ≥ N |
+| Volume Tier | 1–4 | Verifier requires tier ≥ N (T3 = $10k–$100k volume in last 30 days) |
+
+The verifier sends `issue_attestation(dimension, threshold)` to the Cypher program. The program computes the agent's score from their reputation PDA, runs the threshold check, and emits an `AttestationEvent { passes, score, threshold, agent, timestamp }`.
+
+The verifier's application receives only `{ passes: boolean }`. Underlying scores, event counts, and volume figures never reach verifier code. By design.
+
+Try it yourself in the [verifier console](https://cypher-devnet.vercel.app/console) — paste any pubkey, pick any dimension, set any threshold.
+
 ## Integrate in 30 lines
+
 
 ```ts
 import { verifyAttestation, Dimensions } from "@sonayonn/cypher-verify";
