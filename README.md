@@ -18,11 +18,6 @@ Every privacy use case on MagicBlock's RFP roadmap silently depends on agent rep
 
 Three reputation dimensions — **Payment Reliability**, **Credit Worthiness**, **Volume Tier** — recorded privately, scored privately, attestable on demand. The verifier learns whether the agent meets a threshold. Nothing else.
 
-## Demo
-
-> *3-minute walkthrough — coming on submission day*
-
-![Cypher demo](./docs/demo.gif)
 
 ## Try it now
 
