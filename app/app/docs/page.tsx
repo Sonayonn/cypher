@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CypherLogo } from "@/components/cypher-logo";
+import { Code } from "@/components/code-block";
 
 export default function DocsPage() {
   return (
@@ -47,12 +48,20 @@ export default function DocsPage() {
         </Section>
 
         <Section title="Install">
-          <Code>{`npm install @sonayonn/cypher-verify @coral-xyz/anchor @solana/web3.js
-# (Cypher's verify module is a single file you can copy)`}</Code>
+          <Code language="bash">{`npm install @sonayonn/cypher-verify @coral-xyz/anchor @solana/web3.js`}</Code>
+          <a
+            href="https://www.npmjs.com/package/@sonayonn/cypher-verify"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium hover:underline"
+            style={{ color: "var(--cypher-accent)" }}
+          >
+            View on npm ↗
+          </a>
         </Section>
 
         <Section title="Use it">
-          <Code>{`import { verifyAttestation, Dimensions } from "@/lib/cypher-verify";
+          <Code language="tsx">{`import { verifyAttestation, Dimensions } from "@/lib/cypher-verify";
 import { PublicKey } from "@solana/web3.js";
 
 // In your verifier flow (e.g. checkout, lending, auction entry):
@@ -95,6 +104,20 @@ if (result.passes) {
             <Pair label="Program ID" value="4ofnnZnnjkejk8Sk5ggjtAzAC9YSeVGTLuX1g7jPrtJC" />
             <Pair label="Network" value="Solana devnet" />
             <Pair label="Demo agent" value="J15wEqvQvXJHGAZSaMbaEnnEvjV7JqLB6Ku2ZepB3CQ5" />
+            <div className="flex flex-wrap items-baseline gap-2">
+              <dt className="text-muted-foreground">npm package:</dt>
+              <dd>
+                <a
+                  href="https://www.npmjs.com/package/@sonayonn/cypher-verify"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-xs hover:underline break-all"
+                  style={{ color: "var(--cypher-accent)" }}
+                >
+                  @sonayonn/cypher-verify ↗
+                </a>
+              </dd>
+            </div>
           </dl>
         </Section>
 
@@ -151,14 +174,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h2 className="text-2xl font-bold tracking-[-0.02em] mb-5">{title}</h2>
       {children}
     </section>
-  );
-}
-
-function Code({ children }: { children: string }) {
-  return (
-    <pre className="bg-zinc-950 text-zinc-100 p-5 rounded-xl overflow-x-auto text-sm font-mono leading-relaxed border border-zinc-800">
-      {children}
-    </pre>
   );
 }
 

@@ -136,6 +136,17 @@ This is enforced by the protocol: the AttestationEvent emitted on threshold chec
 - Score economics calibrated against real agent behavior data
 - Programmatic SDK for non-Solana verifiers
 
+## Who uses Cypher
+
+Cypher's customers are verifier applications — Solana apps that need to gate access on agent reputation:
+
+- **Lending protocols** offering undercollateralized lines to agents (e.g., Marginfi, Kamino-style markets) gate by `Credit Worthiness ≥ N`
+- **Agent infrastructure providers** (compute marketplaces, hosted inference, DePIN billing) offer post-pay tiers gated by `Payment Reliability ≥ N`
+- **Private OTC desks and premium DEX features** restrict access to T3+ agents using `Volume Tier ≥ 3`
+- **Token launchpads and whitelisted markets** filter sybil agents through volume gating
+
+Each integration is a single function call. The customer pays in protocol fees, subscription, or token (v2 monetization model). Agents — the subjects of reputation — benefit by accessing markets that wouldn't otherwise transact with them.
+
 ## Stack
 
 Anchor 0.32 · Solana 2.0 · MagicBlock ephemeral-rollups-sdk 0.11.1 · Next.js 16 · TypeScript 5.6 · Tailwind 4 · shadcn/ui
